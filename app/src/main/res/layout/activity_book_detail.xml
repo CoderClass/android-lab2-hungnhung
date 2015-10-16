@@ -9,7 +9,8 @@
         android:id="@+id/ivBookCover"
         android:layout_marginTop="8dp"
         android:layout_width="280dp"
-        android:layout_height="280dp" />
+        android:layout_height="280dp"
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -17,14 +18,14 @@
         android:layout_height="wrap_content"
         android:textSize="32sp"
         android:layout_marginTop="8dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/tvAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="22sp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

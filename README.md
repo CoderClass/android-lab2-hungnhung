@@ -4,6 +4,10 @@ Android app that leverages the [OpenLibrary API](https://openlibrary.org/develop
 
 ![Imgur](http://i.imgur.com/NJmF42Yl.png)
 
+## Final Output
+
+![Output] (booksearch.gif)
+
 ## Overview
 
 The app does the following:

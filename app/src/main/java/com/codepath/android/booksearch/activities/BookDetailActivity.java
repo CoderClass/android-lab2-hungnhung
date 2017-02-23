@@ -14,6 +14,7 @@ public class BookDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvAuthor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

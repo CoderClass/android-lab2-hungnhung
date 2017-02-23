@@ -1,5 +1,7 @@
 package com.codepath.android.booksearch.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import org.json.JSONArray;
@@ -8,10 +10,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Book {
+public class Book implements Parcelable {
     private String openLibraryId;
     private String author;
     private String title;
+    private String publisher;
+    private String publishYear;
 
     public String getOpenLibraryId() {
         return openLibraryId;
@@ -23,6 +27,22 @@ public class Book {
 
     public String getAuthor() {
         return author;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getPublishYear() {
+        return publishYear;
+    }
+
+    public void setPublishYear(String publishYear) {
+        this.publishYear = publishYear;
     }
 
     // Get book cover from covers API
@@ -38,12 +58,14 @@ public class Book {
             // Check if a cover edition is available
             if (jsonObject.has("cover_edition_key")) {
                 book.openLibraryId = jsonObject.getString("cover_edition_key");
-            } else if(jsonObject.has("edition_key")) {
+            } else if (jsonObject.has("edition_key")) {
                 final JSONArray ids = jsonObject.getJSONArray("edition_key");
                 book.openLibraryId = ids.getString(0);
             }
             book.title = jsonObject.has("title_suggest") ? jsonObject.getString("title_suggest") : "";
             book.author = getAuthor(jsonObject);
+            book.publisher = getPublisher(jsonObject);
+            book.publishYear = getPublishYear(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -62,6 +84,36 @@ public class Book {
                 authorStrings[i] = authors.getString(i);
             }
             return TextUtils.join(", ", authorStrings);
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
+    // Return comma separated publisher list when there is more than one publisher
+    private static String getPublisher(final JSONObject jsonObject) {
+        try {
+            final JSONArray publishers = jsonObject.getJSONArray("publisher");
+            int numPublishers = publishers.length();
+            final String[] publisherStrings = new String[numPublishers];
+            for (int i = 0; i < numPublishers; ++i) {
+                publisherStrings[i] = publishers.getString(i);
+            }
+            return TextUtils.join(", ", publisherStrings);
+        } catch (JSONException e) {
+            return "";
+        }
+    }
+
+    // Return comma separated publish_date list when there is more than one publish_date
+    private static String getPublishYear(final JSONObject jsonObject) {
+        try {
+            final JSONArray publishYears = jsonObject.getJSONArray("publish_year");
+            int numPublishYears = publishYears.length();
+            final String[] publishYearStrings = new String[numPublishYears];
+            for (int i = 0; i < numPublishYears; ++i) {
+                publishYearStrings[i] = publishYears.getString(i);
+            }
+            return TextUtils.join(", ", publishYearStrings);
         } catch (JSONException e) {
             return "";
         }
@@ -87,4 +139,42 @@ public class Book {
         }
         return books;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.openLibraryId);
+        dest.writeString(this.author);
+        dest.writeString(this.title);
+        dest.writeString(this.publisher);
+        dest.writeString(this.publishYear);
+    }
+
+    public Book() {
+    }
+
+    protected Book(Parcel in) {
+        this.openLibraryId = in.readString();
+        this.author = in.readString();
+        this.title = in.readString();
+        this.publisher = in.readString();
+        this.publishYear = in.readString();
+    }
+
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel source) {
+            return new Book(source);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 }

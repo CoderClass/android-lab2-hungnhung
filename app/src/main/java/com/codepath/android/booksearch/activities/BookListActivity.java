@@ -1,13 +1,15 @@
 package com.codepath.android.booksearch.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.codepath.android.booksearch.R;
@@ -26,6 +28,7 @@ import cz.msebera.android.httpclient.Header;
 
 
 public class BookListActivity extends AppCompatActivity {
+    public static final String KEY_BOOK = "book";
     private ListView lvBooks;
     private BookAdapter bookAdapter;
     private BookClient client;
@@ -47,6 +50,15 @@ public class BookListActivity extends AppCompatActivity {
         lvBooks.setAdapter(bookAdapter);
         // Fetch the data remotely
 //        fetchBooks("Oscar Wilde");
+
+        lvBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(BookListActivity.this, BookDetailActivity.class);
+                intent.putExtra(KEY_BOOK, bookAdapter.getItem(position));
+                startActivity(intent);
+            }
+        });
     }
 
     // Executes an API call to the OpenLibrary search endpoint, parses the results
@@ -115,9 +127,7 @@ public class BookListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
